@@ -1,0 +1,44 @@
+local function printChildren(service)
+    if service then
+        print("Children of", service.ClassName, "service:")
+        for _, child in ipairs(service:GetChildren()) do
+            print("-", child.Name)
+        end
+    else
+        warn("Service is nil.")
+    end
+end
+
+local function findServiceByClassName(parent, className)
+    for _, child in ipairs(parent:GetChildren()) do
+        if child.ClassName == className then
+            return child
+        elseif #child:GetChildren() > 0 then
+            local result = findServiceByClassName(child, className)
+            if result then
+                return result
+            end
+        end
+    end
+    return nil
+end
+
+local function deobfuscateService(obfuscatedServiceName)
+    local obfuscatedService = game:GetService(obfuscatedServiceName)
+    if obfuscatedService then
+        local originalClassName = obfuscatedService.ClassName
+        local originalService = findServiceByClassName(game, originalClassName)
+        if originalService then
+            print("Deobfuscated service found:", originalService.Name)
+            printChildren(originalService) -- Print children of the original service
+            return originalService
+        else
+            warn("Failed to deobfuscate service:", obfuscatedServiceName)
+        end
+    else
+        warn("Obfuscated service not found:", obfuscatedServiceName)
+    end
+    return nil
+end
+
+local deobfuscatedService = deobfuscateService("Players")
