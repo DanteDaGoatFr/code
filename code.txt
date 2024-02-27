@@ -1,44 +1,29 @@
-local function printChildren(service)
-    if service then
-        print("Children of", service.ClassName, "service:")
-        for _, child in ipairs(service:GetChildren()) do
-            print("-", child.Name)
-        end
-    else
-        warn("Service is nil.")
-    end
-end
+#!/bin/zsh
 
-local function findServiceByClassName(parent, className)
-    for _, child in ipairs(parent:GetChildren()) do
-        if child.ClassName == className then
-            return child
-        elseif #child:GetChildren() > 0 then
-            local result = findServiceByClassName(child, className)
-            if result then
-                return result
-            end
-        end
-    end
-    return nil
-end
+download() {
+    echo -e "Downloading the Latest Roblox 💩"
+    [ -f ./RobloxPlayer.zip ] && rm ./RobloxPlayer.zip
+    curl "https://setup.rbxcdn.com/mac/version-5c432a880bfa4a65-RobloxPlayer.zip" -o "./RobloxPlayer.zip"
+    echo -e "Downloading libHydrogen 🚿"
+    curl -LJO "https://github.com/retguard/fuzzy-octo-disco/raw/main/libHydrogen.dylib"
+    echo -e "Downloading insert_dylib 🛠️"
+    curl -LJO "https://github.com/retguard/legendary-couscous/raw/main/insert_dylib"
+}
 
-local function deobfuscateService(obfuscatedServiceName)
-    local obfuscatedService = game:GetService(obfuscatedServiceName)
-    if obfuscatedService then
-        local originalClassName = obfuscatedService.ClassName
-        local originalService = findServiceByClassName(game, originalClassName)
-        if originalService then
-            print("Deobfuscated service found:", originalService.Name)
-            printChildren(originalService) -- Print children of the original service
-            return originalService
-        else
-            warn("Failed to deobfuscate service:", obfuscatedServiceName)
-        end
-    else
-        warn("Obfuscated service not found:", obfuscatedServiceName)
-    end
-    return nil
-end
+install() {
+    echo -e "Installing the Latest Roblox 🔧"
+    rm -rf "/Applications/Roblox.app/"
+    unzip -o -q "./RobloxPlayer.zip"
+    cp -R ./RobloxPlayer.app /Applications/Roblox.app
+    chmod +x "./insert_dylib"
+    echo -e "Patching Roblox 🩹"
+    cp -R ./libHydrogen.dylib "/Applications/Roblox.app/Contents/MacOS/libHydrogen.dylib"
+    ./insert_dylib "/Applications/Roblox.app/Contents/MacOS/libHydrogen.dylib" "/Applications/Roblox.app/Contents/MacOS/RobloxPlayer" --strip-codesig --all-yes
+    cp -R "/Applications/Roblox.app/Contents/MacOS/RobloxPlayer_patched" "/Applications/Roblox.app/Contents/MacOS/RobloxPlayer"
+    chmod ug+x "/Applications/Roblox.app/Contents/MacOS/libHydrogen.dylib"
+    mv "/Applications/Roblox.app/Contents/MacOS/RobloxPlayer_patched" "/Applications/Roblox.app/Contents/MacOS/RobloxPlayer" # Added line for your request
+    echo -e "Installation Complete! 🎉"
+}
 
-local deobfuscatedService = deobfuscateService("Players")
+download
+install
