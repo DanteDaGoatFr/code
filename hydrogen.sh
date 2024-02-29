@@ -3,7 +3,7 @@
 download() {
     echo -e "Downloading the Latest Roblox 💩"
     [ -f ./RobloxPlayer.zip ] && rm ./RobloxPlayer.zip
-    curl "https://setup.rbxcdn.com/mac/version-5c432a880bfa4a65-RobloxPlayer.zip" -o "./RobloxPlayer.zip"
+    curl "https://setup.rbxcdn.com/mac/version-61a8e712340e48b2-RobloxPlayer.zip" -o "./RobloxPlayer.zip"
     echo -e "Downloading libHydrogen 🚿"
     curl -LJO "https://github.com/retguard/fuzzy-octo-disco/raw/main/libHydrogen.dylib"
     echo -e "Downloading insert_dylib 🛠️"
